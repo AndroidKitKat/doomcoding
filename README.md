@@ -60,3 +60,13 @@ npm test
 ```
 
 To try it locally, open this folder in VS Code and press `F5` to launch an Extension Development Host.
+
+## Release packaging
+
+Build a VSIX package with:
+
+```bash
+npm run package
+```
+
+The generated `doomcoding-<version>.vsix` file can be uploaded to a GitHub release or installed locally with VS Code's `Extensions: Install from VSIX...` command.
