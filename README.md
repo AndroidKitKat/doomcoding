@@ -5,7 +5,7 @@ A VS Code extension that lets you doomscroll from inside VS Code while Claude Co
 ## One-click flow
 
 1. Install/open the extension in VS Code.
-2. Click `$(play) Doomcoding` in the status bar, run `Doomcoding: Start Scrolling`, or run `Doomcoding: Go Full Vibes` when you want the feed to take over the workspace.
+2. Click `$(play) Doomcoding` in the status bar, or run `Doomcoding: Start Scrolling` from the Command Palette.
 3. Sign in if the feed asks you to.
 4. Keep the feed open beside your AI agent while it works.
 
