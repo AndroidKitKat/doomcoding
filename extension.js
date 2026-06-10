@@ -82,6 +82,7 @@ function registerCommands(context) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('doomcoding.open', () => openDefaultFeed(context)),
+    vscode.commands.registerCommand('doomcoding.goFullVibes', () => goFullVibes(context)),
     vscode.commands.registerCommand('doomcoding.openBrainrotRoulette', () => openRandomFeed(context)),
     vscode.commands.registerCommand('doomcoding.openCustomFeed', async () => {
       const feed = await promptForCustomFeed(context);
@@ -123,34 +124,52 @@ function updateStatusBarVisibility() {
  * @param {vscode.ExtensionContext} context
  */
 async function openDefaultFeed(context) {
+  return openFeed(context, getDefaultFeed(context));
+}
+
+/**
+ * @param {vscode.ExtensionContext} context
+ */
+async function goFullVibes(context) {
+  const feed = getDefaultFeed(context);
+  await enterFullVibesWorkbench();
+  return openFeed(context, feed, { fullVibes: true });
+}
+
+/**
+ * @param {vscode.ExtensionContext} context
+ */
+function getDefaultFeed(context) {
   const defaultFeed = getConfiguration().get('defaultFeed');
 
   if (defaultFeed === 'random') {
-    return openRandomFeed(context);
+    return getRandomPresetFeed();
   }
 
   if (defaultFeed === 'custom') {
-    return openFeed(context, createCustomFeed(getConfiguredCustomUrl()));
+    return createCustomFeed(getConfiguredCustomUrl());
   }
 
   if (defaultFeed === 'last') {
     const lastFeed = context.globalState.get(LAST_FEED_KEY);
     if (isStoredFeed(lastFeed)) {
-      return openFeed(context, lastFeed);
+      return lastFeed;
     }
   }
 
-  const feed = PRESET_FEEDS[defaultFeed];
-  return openFeed(context, feed || PRESET_FEEDS.tiktok);
+  return PRESET_FEEDS[defaultFeed] || PRESET_FEEDS.tiktok;
 }
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function openRandomFeed(context) {
+  return openFeed(context, getRandomPresetFeed());
+}
+
+function getRandomPresetFeed() {
   const feeds = getPresetFeeds();
-  const feed = feeds[Math.floor(Math.random() * feeds.length)];
-  return openFeed(context, feed);
+  return feeds[Math.floor(Math.random() * feeds.length)];
 }
 
 /**
@@ -163,6 +182,11 @@ async function pickFeed(context) {
       label: '$(play) Start default feed',
       description: 'Opens instantly using doomcoding.defaultFeed',
       feed: undefined
+    },
+    {
+      label: '$(screen-full) Go Full Vibes',
+      description: 'Close editors, focus the workbench, and open the default feed',
+      fullVibes: true
     },
     {
       label: '$(sparkle) Brainrot Roulette',
@@ -198,6 +222,10 @@ async function pickFeed(context) {
 
   if (!selected) {
     return;
+  }
+
+  if (selected.fullVibes) {
+    return goFullVibes(context);
   }
 
   if (selected.random) {
@@ -242,16 +270,17 @@ async function promptForCustomFeed(context) {
 /**
  * @param {vscode.ExtensionContext} context
  * @param {{ id: string, title: string, url: string }} feed
+ * @param {{ fullVibes?: boolean }} [options]
  */
-async function openFeed(context, feed) {
+async function openFeed(context, feed, options = {}) {
   await context.globalState.update(LAST_FEED_KEY, feed);
 
   if (getConfiguration().get('openMode') === 'embeddedWebview') {
-    openEmbeddedWebview(context, feed.title, feed.url);
+    openEmbeddedWebview(context, feed.title, feed.url, options);
     return;
   }
 
-  await openSimpleBrowser(context, feed.title, feed.url);
+  await openSimpleBrowser(context, feed.title, feed.url, options);
 }
 
 /**
@@ -262,14 +291,45 @@ async function openFeed(context, feed) {
  * @param {vscode.ExtensionContext} context
  * @param {string} title
  * @param {string} url
+ * @param {{ fullVibes?: boolean }} [options]
  */
-async function openSimpleBrowser(context, title, url) {
+async function openSimpleBrowser(context, title, url, options = {}) {
   try {
     await vscode.commands.executeCommand('simpleBrowser.show', url);
-    await vscode.commands.executeCommand('workbench.action.moveEditorToNextGroup');
+    if (!options.fullVibes) {
+      await vscode.commands.executeCommand('workbench.action.moveEditorToNextGroup');
+    }
   } catch {
-    openEmbeddedWebview(context, title, url);
+    openEmbeddedWebview(context, title, url, options);
     vscode.window.showInformationMessage('Doomcoding could not open VS Code Simple Browser, so it used the embedded webview instead.');
+  }
+}
+
+async function enterFullVibesWorkbench() {
+  if (getConfiguration().get('fullVibes.closeEditors')) {
+    await runCommandSilently('workbench.action.closeAllEditors');
+  }
+
+  await runCommandSilently('workbench.action.closeSidebar');
+  await runCommandSilently('workbench.action.closePanel');
+  await runCommandSilently('workbench.action.closeAuxiliaryBar');
+
+  const workbenchMode = getConfiguration().get('fullVibes.workbenchMode');
+  if (workbenchMode === 'zenMode') {
+    await runCommandSilently('workbench.action.toggleZenMode');
+  } else if (workbenchMode === 'fullScreen') {
+    await runCommandSilently('workbench.action.toggleFullScreen');
+  }
+}
+
+/**
+ * @param {string} command
+ */
+async function runCommandSilently(command) {
+  try {
+    await vscode.commands.executeCommand(command);
+  } catch {
+    // Some VS Code variants do not expose every workbench command; Full Vibes should still open the feed.
   }
 }
 
@@ -277,12 +337,13 @@ async function openSimpleBrowser(context, title, url) {
  * @param {vscode.ExtensionContext} context
  * @param {string} title
  * @param {string} url
+ * @param {{ fullVibes?: boolean }} [options]
  */
-function openEmbeddedWebview(context, title, url) {
+function openEmbeddedWebview(context, title, url, options = {}) {
   const panel = vscode.window.createWebviewPanel(
     'doomcoding.feed',
     `Doomcoding: ${title}`,
-    vscode.ViewColumn.Beside,
+    options.fullVibes ? vscode.ViewColumn.Active : vscode.ViewColumn.Beside,
     {
       enableScripts: true,
       retainContextWhenHidden: true

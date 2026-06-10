@@ -21,7 +21,8 @@
     "onCommand:doomcoding.openX",
     "onCommand:doomcoding.openRedditPopular",
     "onCommand:doomcoding.openTwitch",
-    "onCommand:doomcoding.openBrainrotRoulette"
+    "onCommand:doomcoding.openBrainrotRoulette",
+    "onCommand:doomcoding.goFullVibes"
   ],
   "main": "./extension.js",
   "contributes": {
@@ -29,6 +30,10 @@
       {
         "command": "doomcoding.open",
         "title": "Doomcoding: Start Scrolling"
+      },
+      {
+        "command": "doomcoding.goFullVibes",
+        "title": "Doomcoding: Go Full Vibes"
       },
       {
         "command": "doomcoding.openInstagramReels",
@@ -109,12 +114,34 @@
           "type": "boolean",
           "default": false,
           "description": "Automatically open the configured Doomcoding feed after VS Code starts. Disabled by default so the extension is not intrusive."
+        },
+        "doomcoding.fullVibes.closeEditors": {
+          "type": "boolean",
+          "default": true,
+          "description": "Close all open editors before opening the feed in Full Vibes mode. VS Code will still prompt for unsaved files."
+        },
+        "doomcoding.fullVibes.workbenchMode": {
+          "type": "string",
+          "default": "zenMode",
+          "enum": [
+            "zenMode",
+            "fullScreen",
+            "none"
+          ],
+          "description": "Workbench focus mode used by Doomcoding: Go Full Vibes. zenMode hides most UI; fullScreen toggles OS full-screen; none only opens the feed in the active editor."
         }
       }
     }
   },
   "scripts": {
-    "test": "node --check extension.js && node -e \"JSON.parse(require('fs').readFileSync('package.json', 'utf8')); console.log('package.json ok')\""
+    "test": "node --check extension.js && node -e \"JSON.parse(require('fs').readFileSync('package.json', 'utf8')); console.log('package.json ok')\"",
+    "package": "npx --yes @vscode/vsce package --no-dependencies --allow-missing-repository"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "files": [
+    "extension.js",
+    "media",
+    "README.md",
+    "LICENSE"
+  ]
 }

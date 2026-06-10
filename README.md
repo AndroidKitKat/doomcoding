@@ -24,10 +24,13 @@ Doomcoding includes presets for:
 
 Run `Doomcoding: Brainrot Roulette` when you do not even want to pick. It randomly opens one of the preset feeds.
 
+Run `Doomcoding: Go Full Vibes` when you want the browser to take over: Doomcoding closes open editors, hides sidebars/panels, enters the configured focus mode, and opens your default feed in the active editor. VS Code will still protect unsaved files with its normal save prompts.
+
 ## Commands
 
 - `Doomcoding: Start Scrolling` opens your configured default feed immediately.
-- `Doomcoding: Pick Feed` shows the full preset list, the last feed you used, Brainrot Roulette, and a custom URL option.
+- `Doomcoding: Go Full Vibes` closes other editors, hides UI chrome, and opens your default feed as the main workspace vibe.
+- `Doomcoding: Pick Feed` shows the full preset list, the last feed you used, Brainrot Roulette, Full Vibes, and a custom URL option.
 - `Doomcoding: Brainrot Roulette` opens a random preset feed.
 - `Doomcoding: Open TikTok` opens TikTok directly.
 - `Doomcoding: Open Instagram Reels` opens Reels directly.
@@ -46,6 +49,8 @@ Run `Doomcoding: Brainrot Roulette` when you do not even want to pick. It random
 | `doomcoding.customFeedUrl` | `https://www.youtube.com/shorts` | URL opened when the default feed is `custom` or by `Doomcoding: Open Custom Feed`. |
 | `doomcoding.showStatusBarButton` | `true` | Shows or hides the one-click status bar launcher. |
 | `doomcoding.openOnStartup` | `false` | Opens the configured feed automatically after VS Code starts. |
+| `doomcoding.fullVibes.closeEditors` | `true` | Closes all editors before opening Full Vibes. VS Code still prompts for unsaved files. |
+| `doomcoding.fullVibes.workbenchMode` | `zenMode` | Focus mode used by Full Vibes: `zenMode`, `fullScreen`, or `none`. |
 
 ## Notes
 
