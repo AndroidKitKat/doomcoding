@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Doomcoding icon">
+  <defs>
+    <linearGradient id="g" x1="12" y1="18" x2="116" y2="110" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff3b5c"/>
+      <stop offset="1" stop-color="#00f2ea"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#0d1117"/>
+  <path d="M66 24c20 0 37 15 39 35 2 28-21 45-43 45-19 0-35-12-39-30-2-10 1-20 8-27 9-9 23-10 32-1 6 6 6 16-1 21-5 5-14 4-18-1" fill="none" stroke="url(#g)" stroke-width="11" stroke-linecap="round"/>
+  <path d="M82 34v38c0 12-8 22-20 24" fill="none" stroke="#f0f6fc" stroke-width="8" stroke-linecap="round" opacity="0.92"/>
+</svg>
