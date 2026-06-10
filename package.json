@@ -1,0 +1,120 @@
+{
+  "name": "doomcoding",
+  "displayName": "Doomcoding",
+  "description": "Open TikTok, Reels, YouTube Shorts, X, Reddit, Twitch, or any scroll feed beside your AI coding agent in VS Code.",
+  "version": "0.1.0",
+  "publisher": "doomcoding",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:doomcoding.open",
+    "onCommand:doomcoding.openInstagramReels",
+    "onCommand:doomcoding.openTikTok",
+    "onCommand:doomcoding.openCustomFeed",
+    "onCommand:doomcoding.pickFeed",
+    "onCommand:doomcoding.openYouTubeShorts",
+    "onCommand:doomcoding.openX",
+    "onCommand:doomcoding.openRedditPopular",
+    "onCommand:doomcoding.openTwitch",
+    "onCommand:doomcoding.openBrainrotRoulette"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "doomcoding.open",
+        "title": "Doomcoding: Start Scrolling"
+      },
+      {
+        "command": "doomcoding.openInstagramReels",
+        "title": "Doomcoding: Open Instagram Reels"
+      },
+      {
+        "command": "doomcoding.openTikTok",
+        "title": "Doomcoding: Open TikTok"
+      },
+      {
+        "command": "doomcoding.openYouTubeShorts",
+        "title": "Doomcoding: Open YouTube Shorts"
+      },
+      {
+        "command": "doomcoding.openX",
+        "title": "Doomcoding: Open X Explore"
+      },
+      {
+        "command": "doomcoding.openRedditPopular",
+        "title": "Doomcoding: Open Reddit Popular"
+      },
+      {
+        "command": "doomcoding.openTwitch",
+        "title": "Doomcoding: Open Twitch"
+      },
+      {
+        "command": "doomcoding.openBrainrotRoulette",
+        "title": "Doomcoding: Brainrot Roulette"
+      },
+      {
+        "command": "doomcoding.openCustomFeed",
+        "title": "Doomcoding: Open Custom Feed"
+      },
+      {
+        "command": "doomcoding.pickFeed",
+        "title": "Doomcoding: Pick Feed"
+      }
+    ],
+    "configuration": {
+      "title": "Doomcoding",
+      "properties": {
+        "doomcoding.defaultFeed": {
+          "type": "string",
+          "default": "tiktok",
+          "enum": [
+            "tiktok",
+            "instagram",
+            "youtubeShorts",
+            "x",
+            "redditPopular",
+            "twitch",
+            "random",
+            "custom",
+            "last"
+          ],
+          "description": "Feed opened by Doomcoding: Start Scrolling and the status bar button. Use random for Brainrot Roulette."
+        },
+        "doomcoding.openMode": {
+          "type": "string",
+          "default": "simpleBrowser",
+          "enum": [
+            "simpleBrowser",
+            "embeddedWebview"
+          ],
+          "description": "How feeds open. simpleBrowser uses VS Code's built-in browser for the lowest-friction sign-in/cookie flow, while embeddedWebview uses Doomcoding's custom panel."
+        },
+        "doomcoding.customFeedUrl": {
+          "type": "string",
+          "default": "https://www.youtube.com/shorts",
+          "description": "URL opened when the default feed is custom or by the Doomcoding: Open Custom Feed command."
+        },
+        "doomcoding.showStatusBarButton": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a one-click Doomcoding button in the VS Code status bar."
+        },
+        "doomcoding.openOnStartup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically open the configured Doomcoding feed after VS Code starts. Disabled by default so the extension is not intrusive."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "node --check extension.js && node -e \"JSON.parse(require('fs').readFileSync('package.json', 'utf8')); console.log('package.json ok')\""
+  },
+  "devDependencies": {}
+}
